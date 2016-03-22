@@ -134,38 +134,46 @@
 
     context.currentPage = parseInt(context.pageNum.value, 10);
 
-    if (!nav.classList.contains('pdf-nav')) {
-      if (pattern.test(nav.value)) {
-        value = nav.value;
+    if (!nav.classList.contains('pdf-nav'))
+    {
+      if (pattern.test(nav.value))
+      {
+        value = parseInt(nav.value);
 
-        if (value < 1) {
-          value = 1;
-        }
-        if (value > context.PDF.numPages) {
-          value = context.PDF.numPages;
-        }
+        if (value < 1) value = 1;
+        if (value > context.PDF.numPages) value = context.PDF.numPages;
+
         nav.value = value;
+
+        (value === 1)
+          ? context.pageNavPN[0].classList.add('pdf-disabled')
+          : context.pageNavPN[0].classList.remove('pdf-disabled');
+
+        (value === context.PDF.numPages)
+          ? context.pageNavPN[1].classList.add('pdf-disabled')
+          : context.pageNavPN[1].classList.remove('pdf-disabled');
+
         context.renderPDF(value);
       }
-    } else if (!nav.classList.contains('pdf-disabled')) {
-      if (!!nav.classList.contains('pdf-next')) {
-        context.currentPage++;
-      } else {
-        context.currentPage--;
-      }
-      if (context.currentPage === 1) {
-        context.pageNavPN[0].classList.add('pdf-disabled');
-      } else {
-        context.pageNavPN[0].classList.remove('pdf-disabled');
-      }
-      if (context.currentPage === context.PDF.numPages) {
-        context.pageNavPN[1].classList.add('pdf-disabled');
-      } else {
-        context.pageNavPN[1].classList.remove('pdf-disabled');
-      }
+    } else
+    {
+      if (!nav.classList.contains('pdf-disabled'))
+      {
+        (!!nav.classList.contains('pdf-next'))
+          ? context.currentPage++
+          : context.currentPage--;
 
-      context.pageNum.value = context.currentPage;
-      context.renderPDF(context.currentPage);
+        (context.currentPage === 1)
+          ? context.pageNavPN[0].classList.add('pdf-disabled')
+          : context.pageNavPN[0].classList.remove('pdf-disabled');
+
+        (context.currentPage === context.PDF.numPages)
+          ? context.pageNavPN[1].classList.add('pdf-disabled')
+          : context.pageNavPN[1].classList.remove('pdf-disabled');
+
+        context.pageNum.value = context.currentPage;
+        context.renderPDF(context.currentPage);
+      }
     }
   };
 
