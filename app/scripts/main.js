@@ -1,6 +1,6 @@
-/* global PDFJS, URL */
+ /* global PDFJS, URL */
 
-'use strict';
+ 'use strict';
 
 (function (window, undefined) {
   var Reader = function (el) {
@@ -22,7 +22,8 @@
 
     this.ctx = this.viewport.getContext('2d');
 
-    this.SRC = el.getAttribute('src');
+    //this.SRC = el.getAttribute('src');
+    this.SRC = el.src.path;
     this.WIDTH = el.getAttribute('width');
     this.HEIGHT = el.getAttribute('height');
 
@@ -36,11 +37,13 @@
     var width = this.WIDTH,
       height = this.HEIGHT;
 
-    if (attrName === 'width') {
+    if (attrName === 'width')
+    {
       width = newVal;
     }
 
-    if (attrName === 'height') {
+    if (attrName === 'height')
+    {
       height = newVal;
     }
 
@@ -51,7 +54,10 @@
     this.viewportOutStyle.height = height - 40 + 'px';
   };
 
-  Reader.prototype.loadPDF = function() {
+  Reader.prototype.setSrc = function (src) {
+    this.SRC = src;
+  };
+  Reader.prototype.loadPDF = function () {
     var self = this;
 
     PDFJS.getDocument(this.SRC).then(function (pdf) {
@@ -76,16 +82,19 @@
       self.pageW = page.view[2];
       self.pageH = page.view[3];
 
-      if (self.currentZoomVal === 0 || !!resize) {
+      if (self.currentZoomVal === 0 || !!resize)
+      {
         scaleW = Math.round((self.WIDTH / self.pageW) * 100) / 100,
           scaleH = Math.round(((self.HEIGHT - 40) / self.pageH) * 100) / 100,
           scale = Math.min(scaleH, scaleW);
         self.currentZoomVal = self.fitZoomVal = scale;
         self.widthZoomVal = self.WIDTH / self.pageW;
       }
-      if (!!resize) {
+      if (!!resize)
+      {
         self.zoomPage({target: self.zoomLvl});
-      } else {
+      } else
+      {
         scale = self.currentZoomVal;
 
         viewerViewport = page.getViewport(scale);
@@ -107,20 +116,24 @@
     });
   };
 
-  Reader.prototype.setViewportPos = function() {
+  Reader.prototype.setViewportPos = function () {
     this.viewportStyle.left = (this.WIDTH - this.pageW) / 2 + 'px';
 
-    if (this.pageH < this.HEIGHT) {
+    if (this.pageH < this.HEIGHT)
+    {
       this.viewportStyle.top = (this.HEIGHT - this.pageH - 40) / 2 + 'px';
-    } else {
+    } else
+    {
       this.viewportStyle.top = 0;
     }
   };
 
   Reader.prototype.loadViewer = function (numOfPages) {
-    if (numOfPages === 1) {
+    if (numOfPages === 1)
+    {
       this.pageNav.classList.add('pdf-hidden');
-    } else {
+    } else
+    {
       this.pageNav.classList.remove('pdf-hidden');
     }
 
@@ -182,44 +195,59 @@
       step = 0.1,
       digValue;
 
-    if (zoom.classList.contains('pdf-zoom-lvl')) {
+    if (zoom.classList.contains('pdf-zoom-lvl'))
+    {
       digValue = parseInt(zoom.value, 10);
 
-      if (zoom.value === 'fit') {
+      if (zoom.value === 'fit')
+      {
         context.currentZoomVal = context.fitZoomVal;
-      } else if (zoom.value === 'width') {
-        context.currentZoomVal = context.widthZoomVal;
-      } else {
-        context.currentZoomVal = digValue / 100;
+      } else
+      {
+        if (zoom.value === 'width')
+        {
+          context.currentZoomVal = context.widthZoomVal;
+        } else
+        {
+          context.currentZoomVal = digValue / 100;
 
-        if (digValue === 200) {
-          context.zoomNav[1].classList.add('pdf-disabled');
+          if (digValue === 200)
+          {
+            context.zoomNav[1].classList.add('pdf-disabled');
+          }
         }
       }
-      if (parseInt(zoom.value, 10) !== 200) {
+      if (parseInt(zoom.value, 10) !== 200)
+      {
         context.zoomNav[1].classList.remove('pdf-disabled');
       }
       context.zoomNav[0].classList.remove('pdf-disabled');
 
       context.renderPDF(context.currentPage);
-    } else {
-      if (zoom.classList.contains('pdf-scale-down')) {
-        step = - 0.1;
+    } else
+    {
+      if (zoom.classList.contains('pdf-scale-down'))
+      {
+        step = -0.1;
       }
 
       context.currentZoomVal = Math.round((Math.round(context.currentZoomVal * 10) / 10 + step) * 10) / 10;
 
-      if (context.currentZoomVal <= 0.1) {
+      if (context.currentZoomVal <= 0.1)
+      {
         context.currentZoomVal = 0.1;
         context.zoomNav[0].classList.add('pdf-disabled');
-      } else if (context.currentZoomVal >= 2) {
-        context.currentZoomVal = 2;
-        context.zoomNav[1].classList.add('pdf-disabled');
-      } else {
-        context.zoomNav[0].classList.remove('pdf-disabled');
-        context.zoomNav[1].classList.remove('pdf-disabled');
-        context.renderPDF(context.currentPage);
-      }
+      } else
+        if (context.currentZoomVal >= 2)
+        {
+          context.currentZoomVal = 2;
+          context.zoomNav[1].classList.add('pdf-disabled');
+        } else
+        {
+          context.zoomNav[0].classList.remove('pdf-disabled');
+          context.zoomNav[1].classList.remove('pdf-disabled');
+          context.renderPDF(context.currentPage);
+        }
 
       context.zoomCustom.innerHTML = Math.round(context.currentZoomVal * 100) + '%';
       context.zoomFit.selected = false;
@@ -227,7 +255,7 @@
     }
   };
 
-  Reader.prototype.createDownloadLink = function() {
+  Reader.prototype.createDownloadLink = function () {
     var self = this;
 
     this.PDF.getData().then(function (data) {
@@ -244,7 +272,8 @@
     a.href = this.downloadLink;
     a.target = '_parent';
 
-    if ('download' in a) {
+    if ('download' in a)
+    {
       a.download = filename[filename.length - 1];
     }
 
@@ -253,10 +282,10 @@
     a.parentNode.removeChild(a);
   };
 
-  Reader.prototype.setEvents = function() {
+  Reader.prototype.setEvents = function () {
     var self = this;
 
-    this.reader.querySelector('.pdf-download .pdf-btn').addEventListener('click', function() {
+    this.reader.querySelector('.pdf-download .pdf-btn').addEventListener('click', function () {
       self.download(self);
     }, false);
     [].forEach.call(this.pageNavPN, function (el) {

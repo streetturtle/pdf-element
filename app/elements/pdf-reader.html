@@ -72,7 +72,8 @@
       .pdf-disabled, .pdf-hidden {
         color: #666666;
       }
-      .pdf-zoom-lvl{
+
+      .pdf-zoom-lvl {
         background-color: #686868;
         border: 1px solid black;
         color: #ddd;
@@ -134,11 +135,28 @@
   <script src="../scripts/main.js"></script>
   <!-- /build -->
 
+
   <script>
     Polymer({
               is: 'pdf-reader',
-              ready: function () {
-                this.instance = new Polymer.Reader(this);
+              properties: {
+                src: {
+                  type: String,
+                  notify: true,
+                  observer: '_srcChanged'
+                },
+              },
+              _srcChanged: function (newValue, oldValue) {
+                if (newValue != null)
+                {
+                  if (this.instance == null)
+                    this.instance = new Polymer.Reader(this);
+                  else
+                  {
+                    this.instance.setSrc(newValue.path);
+                    this.instance.loadPDF();
+                  }
+                }
               },
               attributeChanged: function (attrName, oldVal, newVal) {
                 this.instance.setSize(attrName, newVal);
