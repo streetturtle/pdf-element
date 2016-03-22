@@ -1,0 +1,14 @@
+{
+  "name": "pdf-element",
+  "private": true,
+  "dependencies": {
+    "iron-elements": "PolymerElements/iron-elements#^1.0.0",
+    "polymer": "Polymer/polymer#^1.2.0",
+    "font-awesome": "^4.5.0",
+    "bootstrap": "^3.3.6"
+  },
+  "devDependencies": {
+    "web-component-tester": "^4.0.0"
+  },
+  "ignore": []
+}
