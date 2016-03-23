@@ -11,38 +11,42 @@
         height: 40px;
         color: #e3e3e3;
       }
-
+      
       .pdf-ul li {
         display: inline;
         line-height: 39px;
       }
-
+      
       .pdf-ul {
         margin: 0;
         padding: 0 2em
       }
-
-      .pdf-nav, .pdf-next-prev, .pdf-scale, .pdf-scale-down, .pdf-scale-up {
+      
+      .pdf-nav,
+      .pdf-next-prev,
+      .pdf-scale,
+      .pdf-scale-down,
+      .pdf-scale-up {
         display: inline
       }
-
+      
       .pdf-page-nav {
         float: left;
         width: 33%;
         text-align: left
       }
-
+      
       .pdf-scale {
         display: inline-block;
         width: 33%
       }
-
+      
       .pdf-download {
         float: right;
         width: 33%;
         text-align: right
       }
-
+      
       .pdf-page-num {
         width: 2em;
         text-align: center;
@@ -51,35 +55,36 @@
         color: #ddd;
         border-radius: 2px;
       }
-
+      
       .pdf-viewer {
         text-align: center;
         border: 1px solid #4d4d4d;
       }
-
+      
       .pdf-viewport-out {
         overflow: auto;
         background-color: #fafafa;
       }
-
+      
       .pdf-viewport {
         display: block;
         position: relative;
         transition: all 200ms ease-in-out;
         border: 1px solid #eeeeee;
       }
-
-      .pdf-disabled, .pdf-hidden {
+      
+      .pdf-disabled,
+      .pdf-hidden {
         color: #666666;
       }
-
+      
       .pdf-zoom-lvl {
         background-color: #686868;
         border: 1px solid black;
         color: #ddd;
         border-radius: 2px;
       }
-
+      
       .fa {
         font-size: 1.5em;
         cursor: pointer;
@@ -138,30 +143,28 @@
 
   <script>
     Polymer({
-              is: 'pdf-reader',
-              properties: {
-                src: {
-                  type: String,
-                  notify: true,
-                  observer: '_srcChanged'
-                },
-              },
-              _srcChanged: function (newValue, oldValue) {
-                if (newValue != null)
-                {
-                  if (this.instance == null)
-                    this.instance = new Polymer.Reader(this);
-                  else
-                  {
-                    this.instance.setSrc(newValue.path);
-                    this.instance.loadPDF();
-                  }
-                }
-              },
-              attributeChanged: function (attrName, oldVal, newVal) {
-                this.instance.setSize(attrName, newVal);
-              }
-            });
+      is: 'pdf-reader',
+      properties: {
+        src: {
+          type: String,
+          notify: true,
+          observer: '_srcChanged'
+        },
+      },
+      _srcChanged: function(newValue, oldValue) {
+        if (newValue != null) {
+          if (this.instance == null)
+            this.instance = new Polymer.Reader(this);
+          else {
+            this.instance.setSrc(newValue);
+            this.instance.loadPDF();
+          }
+        }
+      },
+      attributeChanged: function(attrName, oldVal, newVal) {
+        this.instance.setSize(attrName, newVal);
+      }
+    });
   </script>
 
 </dom-module>

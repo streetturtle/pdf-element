@@ -23,7 +23,7 @@
     this.ctx = this.viewport.getContext('2d');
 
     //this.SRC = el.getAttribute('src');
-    this.SRC = el.src.path;
+    this.SRC = el.src;
     this.WIDTH = el.getAttribute('width');
     this.HEIGHT = el.getAttribute('height');
 
