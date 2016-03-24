@@ -1,5 +1,16 @@
 {
   "name": "pdf-element",
+  "version": "1.0.1",
+  "authors": [
+    "Pavel Makhov <streetturtle@gmail.com>"
+  ],
+  "description": "PDF viewer element for Polymer 1.0",
+  "keywords": [
+    "web-components",
+    "web-component",
+    "polymer",
+    "pdf"
+  ],
   "private": true,
   "dependencies": {
     "iron-elements": "PolymerElements/iron-elements#^1.0.0",
