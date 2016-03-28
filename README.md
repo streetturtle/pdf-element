@@ -20,6 +20,8 @@ Liutikov](https://github.com/roman01la).
 ```
 git clone https://github.com/streetturtle/pdf-element.git
 cd ./pdf-element
+npm install
+bower install
 gulp serve
 ```
 
