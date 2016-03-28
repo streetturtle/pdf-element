@@ -140,23 +140,30 @@
     this.reader.classList.add('pdf-loaded');
   };
 
+  Reader.prototype.changePDFSource = function(newSrc){
+    this.setSrc(newSrc);
+    this.loadPDF();
+    this.pageNavPN[0].classList.add('pdf-disabled')
+    this.pageNavPN[1].classList.remove('pdf-disabled')
+  }
+
   Reader.prototype.changePage = function (e, context) {
     var nav = e.target,
       pattern = /^[0-9]+$/,
       value;
 
-    context.currentPage = parseInt(context.pageNum.value, 10);
-
-    if (!nav.classList.contains('pdf-nav'))
-    {
-      if (pattern.test(nav.value))
-      {
+    if (!nav.classList.contains('pdf-nav')){
+      if (pattern.test(nav.value)){
         value = parseInt(nav.value);
 
-        if (value < 1) value = 1;
+        if (value < 1){
+          context.pageNum.value = 1;
+          value = 1;
+        }
         if (value > context.PDF.numPages) value = context.PDF.numPages;
 
         nav.value = value;
+        context.currentPage = value;
 
         (value === 1)
           ? context.pageNavPN[0].classList.add('pdf-disabled')
@@ -167,6 +174,8 @@
           : context.pageNavPN[1].classList.remove('pdf-disabled');
 
         context.renderPDF(value);
+      }else{
+        context.pageNum.value = context.currentPage;
       }
     } else
     {

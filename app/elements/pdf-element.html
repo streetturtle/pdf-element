@@ -8,9 +8,12 @@
     }
   </style>
   <template>
+    <h3>Static PDF file</h3>
+    <pdf-reader src="../pdf.pdf" width=720 height=400></pdf-reader>
+
+    <h3>Dynamically loaded PDF</h3>
     <div class="header"><pdf-list selected-pdf="{{selectedPdf}}"></pdf-list></div>
-    <pdf-reader src="../pdf.pdf" width=720 height=800></pdf-reader>
-    <pdf-reader src="{{selectedPdf.path}}" width=720 height=800></pdf-reader>
+    <pdf-reader src="{{selectedPdf.path}}" width=720 height=400></pdf-reader>
   </template>
 
   <script>
