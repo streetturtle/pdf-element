@@ -25,6 +25,13 @@ bower install
 gulp serve
 ```
 
+or with bower:
+
+```
+bower install -S pdf-element
+```
+
+
 ## Licence
 
 **The MIT License (MIT)**
