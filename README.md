@@ -13,7 +13,7 @@ Liutikov](https://github.com/roman01la).
 - Compatible with Polymer 1.0.
 - Looks nice :)
 
-![pdf-element](pdf-element.png)
+![pdf-element](https://raw.githubusercontent.com/streetturtle/pdf-element/master/pdf-element.png)
 
 ## Installation
 
