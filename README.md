@@ -2,8 +2,7 @@
 
 Web component built with Polymer which allows to view PDF files.
 
-This component based on similar [component](https://github.com/roman01la/pdf-reader-web-component) by [Roman
-Liutikov](https://github.com/roman01la).
+Demo: http://pavelmakhov.com/pdf-element/
 
 ## Features
 
