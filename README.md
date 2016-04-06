@@ -9,7 +9,8 @@ Demo: http://pavelmakhov.com/pdf-element/
 - Next/Previous page
 - Zoom
 - Download
-- Compatible with Polymer 1.0.
+- Compatible with Polymer 1.0
+- Dynamically change document without page reloading
 - Looks nice :)
 
 ![pdf-element](https://raw.githubusercontent.com/streetturtle/pdf-element/master/pdf-element.png)
