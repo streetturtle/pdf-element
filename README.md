@@ -6,6 +6,7 @@ Demo: http://pavelmakhov.com/pdf-element/
 
 ## Features
 
+- Works in IE :satisfied:
 - Next/Previous page
 - Zoom
 - Download
@@ -13,7 +14,7 @@ Demo: http://pavelmakhov.com/pdf-element/
 - Dynamically change document without page reloading
 - Looks nice :)
 
-![pdf-element](https://raw.githubusercontent.com/streetturtle/pdf-element/master/pdf-element.png)
+![pdf-element](http://pavelmakhov.com/pdf-element/pdf-element.png)
 
 ## Installation
 
