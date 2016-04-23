@@ -1,0 +1,177 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-card/paper-card.html">
+<link rel="import" href="../paper-toolbar/paper-toolbar.html">
+
+<script src="../pdfjs-dist/build/pdf.js"></script>
+<script src="../pdfjs-dist/build/pdf.worker.js"></script>
+<script src="main.js"></script>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+<!--
+Polymer element which renders PDF documents. It uses [PDF.js](https://mozilla.github.io/pdf.js/) library behind.
+
+Example:
+
+Minimum configuration:
+```html
+<pdf-element src="../example.pdf" width=800 height=600></pdf-element>
+```
+Optionally following parameters could be triggered:
+ - `elevation` material elevation;
+ - `downloadable` to be able to download document;
+ - `show-file-name` to show name of the file in the PDF toolbar.
+
+
+ ```html
+ <pdf-element src="../example.pdf" elevation="5" downloadable show-file-name width=800 height=600></pdf-element>
+ ```
+
+Another awesome feature is dynamically load PDF file. So you can change the `src` attribute of the element and document will be automatically reloaded (checkout the demo):
+
+```html
+<pdf-element src="[[pdfFile]]" width=800 height=600></pdf-element>
+```
+
+@demo demo/index.html
+@hero hero.svg
+-->
+<dom-module id="pdf-element">
+
+  <template>
+    <style>
+      paper-toolbar.pdf-toolbar {
+        --paper-toolbar-background: #323639;
+      }
+
+      .pdf-viewer {
+        text-align: center;
+        border: 1px solid #4d4d4d;
+      }
+
+      .pdf-viewport-out {
+        overflow: auto;
+        background-color: #525659;
+      }
+
+      .pdf-viewport {
+        display: block;
+        position: relative;
+        transition: all 200ms ease-in-out;
+        border: 1px solid #eeeeee;
+      }
+    </style>
+
+    <paper-material elevation="{{elevation}}">
+      <paper-card>
+        <div class="card-content">
+
+          <div class="pdf-viewer">
+            <paper-toolbar class="pdf-toolbar">
+              <paper-icon-button icon="arrow-back" on-click="showPrev"></paper-icon-button>
+              <span>{{currentPage}}/</span><span id="totalPages"></span>
+              <paper-icon-button icon="arrow-forward" on-click="showNext"></paper-icon-button>
+              <span class="title" hidden$="{{!showFileName}}">{{fileName}}</span>
+              <span class="title" hidden$="{{showFileName}}"></span>
+              <paper-icon-button icon="zoom-in" on-click="zoomIn"></paper-icon-button>
+              <paper-icon-button icon="zoom-out" on-click="zoomOut"></paper-icon-button>
+              <paper-icon-button id="zoomIcon" icon="fullscreen" on-click="zoom"></paper-icon-button>
+              <paper-icon-button icon="file-download" hidden$="{{!downloadable}}" on-click="download"></paper-icon-button>
+            </paper-toolbar>
+            <div class="pdf-viewport-out">
+              <canvas class="pdf-viewport"></canvas>
+            </div>
+          </div>
+        </div>
+      </paper-card>
+      <paper-material elevation="1">
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'pdf-element',
+      properties: {
+        /**
+         * Source of a PDF file.
+         */
+        src: {
+          type: String,
+          notify: true
+        },
+        /**
+         * The z-depth of this element, from 0-5. Setting to 0 will remove the shadow, and each increasing number greater than 0 will be "deeper" than the last.
+         */
+        elevation: {
+          type: Number,
+          value: 1
+        },
+        /**
+         * If provided then download icon will appear on the toolbar to download file.
+         */
+        downloadable: {
+          type: Boolean,
+          value: false
+        },
+        /**
+         * If provided then file name will be shown on the toolbar.
+         */
+        showFileName: {
+          type: Boolean,
+          value: false
+        }
+      },
+      ready() {
+        this.instance = new Polymer.Reader(this);
+        PDFJS.workerSrc = "../../pdfjs-dist/build/pdf.worker.js";
+        this.currentPage = 1;
+        this.fileName = this.src.split('/').pop();
+      },
+      attributeChanged: function(attrName, oldVal, newVal) {
+        this.instance.changePDFSource(newVal);
+        this.currentPage = 1;
+        this.totalPages = this.instance.totalPages;
+        this.fileName = this.src.split('/').pop();
+      },
+      zoomIn: function() {
+        if (this.instance.currentZoomVal >= 2) {
+          this.instance.currentZoomVal = 2;
+        } else this.instance.zoomIn();
+      },
+      zoomOut: function() {
+        if (this.instance.currentZoomVal <= 0.1) {
+          this.instance.currentZoomVal = 0.1;
+        } else this.instance.zoomOut();
+      },
+      zoom: function() {
+        if (this.instance.currentZoomVal == this.instance.widthZoomVal) {
+          this.instance.zoomPageFit();
+          this.$.zoomIcon.icon = 'fullscreen';
+        } else {
+          this.instance.zoomWidthFit();
+          this.$.zoomIcon.icon = 'fullscreen-exit';
+        }
+      },
+      showPrev: function() {
+        if (1 < this.instance.currentPage) {
+          this.instance.currentPage--;
+          this.instance.renderPDF(this.instance.currentPage);
+          this.currentPage--;
+        }
+      },
+      showNext: function() {
+        if (this.instance.totalPagesNum > this.instance.currentPage) {
+          this.instance.currentPage++;
+          this.instance.renderPDF(this.instance.currentPage);
+          this.currentPage++;
+        }
+      },
+      download: function() {
+        this.instance.download();
+      }
+    });
+  </script>
+
+</dom-module>
