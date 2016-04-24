@@ -8,9 +8,11 @@
 
 <script src="../pdfjs-dist/build/pdf.js"></script>
 <script src="../pdfjs-dist/build/pdf.worker.js"></script>
+<link rel="stylesheet" href="../pdfjs-dist/web/pdf_viewer.css"></script>
 <script src="main.js"></script>
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="../pdfjs-dist/web/pdf_viewer.css">
 
 <!--
 Polymer element which renders PDF documents. It uses [PDF.js](https://mozilla.github.io/pdf.js/) library behind.
@@ -137,6 +139,7 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
             </paper-toolbar>
             <div class="pdf-viewport-out">
               <canvas class="pdf-viewport"></canvas>
+              <div id="text-layer" class="textLayer"></div>
             </div>
           </div>
       </div>
