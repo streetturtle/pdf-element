@@ -3,6 +3,8 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../paper-card/paper-card.html">
 <link rel="import" href="../paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../iron-input/iron-input.html">
 
 <script src="../pdfjs-dist/build/pdf.js"></script>
 <script src="../pdfjs-dist/build/pdf.worker.js"></script>
@@ -62,16 +64,69 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
         transition: all 200ms ease-in-out;
         border: 1px solid #eeeeee;
       }
+
+      paper-input.pageSelector {
+        --paper-input-container-input-color: #212121;
+        --paper-input-container-color: red;
+        --paper-input-container-underline: {
+          visibility: hidden;
+        }
+        ;
+        --paper-input-container-underline-focus: {
+          visibility: hidden;
+        }
+        ;
+      }
+
+      #pageselector {
+        --paper-input-container-underline: {
+          visibility: hidden;
+        }
+        ;
+        --paper-input-container-underline-focus: {
+          visibility: hidden;
+        }
+        ;
+        display: inline-block;
+        padding: 0;
+        width: 1ch;
+      }
+
+      #input {
+        -webkit-margin-start: -3px;
+        color: #fff;
+        line-height: 18px;
+        padding: 3px;
+        text-align: end;
+      }
+
+      #input:focus,
+      #input:hover {
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 2px;
+      }
+
+      #slash {
+        padding: 0 3px;
+      }
+
+      #pagelength-spacer {
+        display: inline-block;
+        text-align: start;
+      }
     </style>
 
     <paper-material elevation="{{elevation}}">
-      <paper-card>
-        <div class="card-content">
+      <div class="card-content">
+        <paper-card>
 
           <div class="pdf-viewer">
             <paper-toolbar class="pdf-toolbar">
               <paper-icon-button icon="arrow-back" on-click="showPrev"></paper-icon-button>
-              <span>{{currentPage}}/</span><span id="totalPages"></span>
+              <paper-input-container id="pageselector" no-label-float="" style="width: 2ch;">
+                <input id="input" is="iron-input" value={{currentPage}} prevent-invalid-input="" allowed-pattern="\d" i18n-values="aria-label:labelPageNumber" aria-label="Page number" on-change="pageNoCommitted">
+              </paper-input-container>
+              <span id="slash">/</span><span id="totalPages"></span>
               <paper-icon-button icon="arrow-forward" on-click="showNext"></paper-icon-button>
               <span class="title" hidden$="{{!showFileName}}">{{fileName}}</span>
               <span class="title" hidden$="{{showFileName}}"></span>
@@ -84,7 +139,7 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
               <canvas class="pdf-viewport"></canvas>
             </div>
           </div>
-        </div>
+      </div>
       </paper-card>
       <paper-material elevation="1">
 
@@ -152,6 +207,19 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
         } else {
           this.instance.zoomWidthFit();
           this.$.zoomIcon.icon = 'fullscreen-exit';
+        }
+      },
+      pageNoCommitted: function() {
+        var page = parseInt(this.$.input.value);
+
+        if ((1 < page) && (page < this.instance.totalPagesNum)) {
+          this.instance.currentPage = page;
+          this.instance.renderPDF(this.instance.currentPage);
+          this.currentPage = page;
+          this.$.input.blur();
+        } else {
+          this.$.input.value = this.currentPage;
+          this.$.input.blur();
         }
       },
       showPrev: function() {
