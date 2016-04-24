@@ -23,7 +23,6 @@
     this.HEIGHT = el.getAttribute('height');
 
     this.setSize();
-    PDFJS.workerSrc = 'scripts/pdf.worker.js';
     this.loadPDF();
   };
 
