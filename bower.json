@@ -23,7 +23,8 @@
     "paper-card": "^0.1.5",
     "paper-toolbar": "^1.1.4",
     "iron-input": "^1.0.10",
-    "paper-input": "^1.1.11"
+    "paper-input": "^1.1.11",
+    "paper-spinner": "^1.1.1"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.1.5",

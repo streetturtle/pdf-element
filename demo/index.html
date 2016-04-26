@@ -41,7 +41,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <h3>PDF-element</h3>
     <demo-snippet class="centered-demo">
       <template>
-        <pdf-element src="./example.pdf" elevation="5" downloadable show-file-name width=800 height=600></pdf-element>
+        <pdf-element src="./example.pdf"
+                     elevation="5"
+                     downloadable
+                     show-file-name
+                     enable-text-selection
+                     width=800 height=600></pdf-element>
       </template>
     </demo-snippet>
   </div>
@@ -52,7 +57,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <template>
         <paper-button raised id="one">PDF One</paper-button>
         <paper-button raised id="another">PDF Two</paper-button>
-        <pdf-element id="pdf" src="./pdf.pdf" width=800 height=600></pdf-element>
+        <pdf-element id="pdf" show-spinner src="./pdf.pdf" width=800 height=600></pdf-element>
         <script>
           window.onload = function() {
             document.querySelector("#one").addEventListener("click", function() {
