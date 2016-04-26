@@ -6,13 +6,14 @@ Demo: http://pavelmakhov.com/pdf-element/
 
 ## Features
 
-- Works in IE :satisfied:
 - Next/Previous page
 - Zoom
-- Download
+- Download (optional)
 - Compatible with Polymer 1.0
 - Dynamically change document without page reloading
-- Looks nice :)
+- Looks polymer way :)
+- Text selection (optional)
+- Works in IE (in progress)
 
 ![pdf-element](http://pavelmakhov.com/pdf-element/pdf-element.png)
 
@@ -32,9 +33,10 @@ or with bower:
 bower install -S pdf-element
 ```
 
+## Contributing
+
+I would really appreciate any help. PR/issues are welcome =)
 
 ## Licence
 
-**The MIT License (MIT)**
-
-© 2016 Pavel Makhov
+**The MIT License (MIT)** © 2016 Pavel Makhov
