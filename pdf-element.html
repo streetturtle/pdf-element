@@ -54,13 +54,11 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
       .pdf-viewer {
         text-align: center;
         border: 1px solid #4d4d4d;
-
       }
 
       .pdf-viewport-out {
         overflow: auto;
         background-color: #525659;
-
       }
 
       .pdf-viewport {
@@ -68,17 +66,18 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
         position: relative;
         border: 1px solid #eeeeee;
         transition: all 200ms ease-in-out;
-
       }
 
       paper-input-container.pageselector {
         --paper-input-container-underline: {
           visibility: hidden;
           width: 3ch;
-        };
+        }
+        ;
         --paper-input-container-underline-focus: {
           visibility: hidden;
-        };
+        }
+        ;
         display: inline-block;
         padding: 0;
         width: 3ch;
@@ -102,10 +101,11 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
         padding: 0 3px;
       }
 
-      paper-spinner{
+      paper-spinner {
         position: absolute;
       }
-      .textLayer{
+
+      .textLayer {
         transition: all 200ms ease-in-out;
       }
     </style>
@@ -118,8 +118,7 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
             <paper-toolbar class="pdf-toolbar">
               <paper-icon-button icon="arrow-back" on-click="showPrev"></paper-icon-button>
               <paper-input-container class="pageselector" no-label-float>
-                <input id="input" is="iron-input" value={{currentPage}} prevent-invalid-input allowed-pattern="\d"
-                       on-change="pageNoCommitted">
+                <input id="input" is="iron-input" value={{currentPage}} prevent-invalid-input allowed-pattern="\d" on-change="pageNoCommitted">
               </paper-input-container>
               <span id="slash">/</span><span id="totalPages"></span>
               <paper-icon-button icon="arrow-forward" on-click="showNext"></paper-icon-button>
@@ -129,8 +128,7 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
               <paper-icon-button icon="zoom-in" on-click="zoomIn"></paper-icon-button>
               <paper-icon-button icon="zoom-out" on-click="zoomOut"></paper-icon-button>
               <paper-icon-button id="zoomIcon" icon="fullscreen" on-click="zoom"></paper-icon-button>
-              <paper-icon-button icon="file-download" hidden$="{{!downloadable}}"
-                                 on-click="download"></paper-icon-button>
+              <paper-icon-button icon="file-download" hidden$="{{!downloadable}}" on-click="download"></paper-icon-button>
             </paper-toolbar>
             <div class="pdf-viewport-out" style="position: relative;">
               <canvas class="pdf-viewport"></canvas>
@@ -176,41 +174,58 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
           type: Boolean,
           value: false
         },
-        showSpinner:{
+        /*
+         * If provided then during page rendering loading spinner will be shown.
+         * Maybe used for documents with many images for example.
+         */
+        showSpinner: {
           type: Boolean,
           value: false
         },
-        enableTextSelection:{
+        /*
+         * If provided then text selection will be enabled.
+         */
+        enableTextSelection: {
           type: Boolean,
           value: false
         }
       },
       ready() {
+        if (this.src && this.src != '') {
+          this._initializeReader();
+        }
+      },
+      _initializeReader: function() {
         this.instance = new Polymer.Reader(this);
-        this.currentPage = 1;
         this.fileName = this.src.split('/').pop();
-      },
-      attributeChanged: function (attrName, oldVal, newVal) {
-        this.instance.changePDFSource(newVal);
         this.currentPage = 1;
-        this.totalPages = this.instance.totalPages;
-        this.fileName = this.src.split('/').pop();
       },
-      zoomIn: function () {
+      attributeChanged: function(attrName, oldVal, newVal) {
+        if (attrName == 'src' && newVal != '') {
+          if (typeof this.instance == 'undefined') this._initializeReader();
+          else {
+            this.instance.changePDFSource(newVal);
+            this.currentPage = 1;
+            this.totalPages = this.instance.totalPages;
+            this.fileName = this.src.split('/').pop();
+          }
+        }
+      },
+      zoomIn: function() {
         if (this.instance.currentZoomVal >= 2) {
           this.instance.currentZoomVal = 2;
         } else {
           this.instance.zoomIn();
         }
       },
-      zoomOut: function () {
+      zoomOut: function() {
         if (this.instance.currentZoomVal <= 0.1) {
           this.instance.currentZoomVal = 0.1;
         } else {
           this.instance.zoomOut();
         }
       },
-      zoom: function () {
+      zoom: function() {
         if (this.instance.currentZoomVal == this.instance.widthZoomVal) {
           this.instance.zoomPageFit();
           this.$.zoomIcon.icon = 'fullscreen';
@@ -219,7 +234,7 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
           this.$.zoomIcon.icon = 'fullscreen-exit';
         }
       },
-      pageNoCommitted: function () {
+      pageNoCommitted: function() {
         var page = parseInt(this.$.input.value);
 
         if ((1 < page) && (page < this.instance.totalPagesNum)) {
@@ -232,21 +247,21 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
           this.$.input.blur();
         }
       },
-      showPrev: function () {
+      showPrev: function() {
         if (1 < this.instance.currentPage) {
           this.instance.currentPage--;
           this.instance.queueRenderPage(this.instance.currentPage);
           this.currentPage--;
         }
       },
-      showNext: function () {
+      showNext: function() {
         if (this.instance.totalPagesNum > this.instance.currentPage) {
           this.instance.currentPage++;
           this.instance.queueRenderPage(this.instance.currentPage);
           this.currentPage++;
         }
       },
-      download: function () {
+      download: function() {
         this.instance.download();
       }
     });
