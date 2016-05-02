@@ -151,7 +151,8 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
          */
         src: {
           type: String,
-          notify: true
+          notify: true,
+          observer: '_srcChanged'
         },
         /**
          * The z-depth of this element, from 0-5. Setting to 0 will remove the shadow, and each increasing number greater than 0 will be "deeper" than the last.
@@ -200,15 +201,13 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
         this.fileName = this.src.split('/').pop();
         this.currentPage = 1;
       },
-      attributeChanged: function(attrName, oldVal, newVal) {
-        if (attrName == 'src' && newVal != '') {
-          if (typeof this.instance == 'undefined') this._initializeReader();
-          else {
-            this.instance.changePDFSource(newVal);
-            this.currentPage = 1;
-            this.totalPages = this.instance.totalPages;
-            this.fileName = this.src.split('/').pop();
-          }
+      _srcChanged: function(newVal) {
+        if (typeof this.instance == 'undefined') this._initializeReader();
+        else {
+          this.instance.changePDFSource(newVal);
+          this.currentPage = 1;
+          this.totalPages = this.instance.totalPages;
+          this.fileName = this.src.split('/').pop();
         }
       },
       zoomIn: function() {
