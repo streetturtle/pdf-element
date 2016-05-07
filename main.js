@@ -7,12 +7,13 @@
     this.element = el;
     this.reader = Polymer.dom(el.root).querySelector('.pdf-viewer');
     this.viewportOut = this.reader.querySelector('.pdf-viewport-out');
-    this.viewport = this.reader.querySelector('.pdf-viewport');
     this.toolbar = this.reader.querySelector('.pdf-toolbar');
-    this.toolbarHeight = 64;
+    this.toolbarHeight = 0;
     this.title = this.toolbar.querySelector('.title');
-
     this.enableTextSelection = el.enableTextSelection;
+
+
+    this.viewport = this.reader.querySelector('.pdf-viewport');
 
     if (this.enableTextSelection){
       this.textLayerDiv = this.reader.querySelector(".textLayer");
@@ -20,26 +21,26 @@
     }
 
     this.spinner = this.reader.querySelector(".spinner");
-
-
     this.totalPages = this.reader.querySelector('#totalPages');
-
     this.viewportStyle = this.viewport.style;
     this.viewportOutStyle = this.viewportOut.style;
 
     this.ctx = this.viewport.getContext('2d');
 
     this.SRC = el.src;
-    this.WIDTH = el.getAttribute('width');
-    this.HEIGHT = el.getAttribute('height');
 
-    this.setSize();
-    this.loadPDF();
+    // this.loadPDF();
+    // this.renderPages();
     this.pageRendering = false;
     this.pageNumPending = null;
+
   };
 
   Reader.prototype.setSize = function(attrName, newVal) {
+
+    this.WIDTH = this.viewportOut.offsetWidth;
+    this.HEIGHT = this.viewportOut.offsetHeight;
+
     var width = this.WIDTH,
       height = this.HEIGHT;
 
@@ -51,11 +52,12 @@
       height = newVal;
     }
 
-    this.element.style.width = this.reader.style.width = width + 'px';
-    this.element.style.height = this.reader.style.height = height + 'px';
+    // this.element.style.width = this.reader.style.width = width + 'px';
+    // this.element.style.height = this.reader.style.height = height + 'px';
+    // this.element.style.height = this.reader.style.height = this.HEIGHT + 64 + 'px';
 
-    this.viewportOutStyle.width = width + 'px';
-    this.viewportOutStyle.height = height - this.toolbarHeight + 'px';
+    // this.viewportOutStyle.width = width + 'px';
+    this.viewportOutStyle.height = height + 'px';
 
     this.spinner.style.top = (height - this.toolbarHeight) / 2 + 'px';
   };
@@ -73,6 +75,7 @@
   };
 
   Reader.prototype.loadPDF = function() {
+    this.setSize();
     var self = this;
 
     PDFJS.getDocument(this.SRC).then(function(pdf) {
@@ -87,7 +90,26 @@
     });
   };
 
-  Reader.prototype.renderPDF = function(pageNum, resize) {
+  Reader.prototype.renderPages = function(pdf) {
+    var self = this;
+    self.viewportOut.innerHTML="";
+    PDFJS.getDocument(this.SRC).then(function(pdf) {
+      self.PDF = pdf;
+
+      for(var num = 1; num <= self.PDF.numPages; num++){
+        pdf.getPage(num).then(self.renderPDF(num, null, true));
+      }
+
+      self.currentPage = 1;
+      self.totalPages.innerHTML = self.PDF.numPages;
+      self.totalPagesNum = self.PDF.numPages;
+      if (!self.currentZoomVal)
+        self.currentZoomVal = self.fitZoomVal = self.widthZoomVal = 0;
+      self.createDownloadLink();
+    });
+  };
+
+  Reader.prototype.renderPDF = function(pageNum, resize, isFull) {
     var self = this;
     self.pageRendering = true;
     self.spinner.active = true;
@@ -113,6 +135,9 @@
 
         viewerViewport = page.getViewport(scale);
 
+        self.ctx.height = viewerViewport.height;
+        self.ctx.width = viewerViewport.width;
+
         self.pageW = self.pageW * scale;
         self.pageH = self.pageH * scale;
 
@@ -122,26 +147,71 @@
         self.viewport.height = self.pageH;
         self.viewportStyle.width = self.pageW + 'px';
         self.viewportStyle.height = self.pageH + 'px';
+
         if (self.enableTextSelection){
           self.textLayerDivStyle.width = self.pageW + 'px';
           self.textLayerDivStyle.height = self.pageH + 'px';
         }
-        // self.ctx.clearRect(0, 0, self.viewport.width, self.viewport.height);
+        self.ctx.clearRect(0, 0, self.viewport.width, self.viewport.height);
 
-        var renderTask = page.render({
-          canvasContext: self.ctx,
-          viewport: viewerViewport
-        });
 
-        renderTask.promise.then(function () {
-          self.pageRendering = false;
-          self.spinner.active = false;
-          if (self.pageNumPending !== null) {
-            // New page rendering is pending
-            self.renderPDF(self.pageNumPending);
-            self.pageNumPending = null;
+        if (isFull){
+
+          var wrapper = document.createElement('div');
+          wrapper.setAttribute("style", "position: relative");
+          var canvas = document.createElement('canvas');
+          var textLayer = document.createElement('div');
+          textLayer.setAttribute("style", "left: " + self.viewportStyle.left)
+
+          textLayer.className = "textLayer";
+
+          var ctx = canvas.getContext('2d');
+
+          // canvas.height = viewerViewport.height;
+          // canvas.width = viewerViewport.width;
+
+          textLayer.height = viewerViewport.height;
+          textLayer.width = viewerViewport.width;
+
+          self.viewportOut.appendChild(wrapper);
+          wrapper.appendChild(canvas);
+          wrapper.appendChild(textLayer);
+
+          page.render({
+            canvasContext: ctx,
+            viewport: viewerViewport
+          });
+
+          if (self.enableTextSelection){
+            self.textLayerDiv.innerHTML="";
+            page.getTextContent().then(function(textContent) {
+              PDFJS.renderTextLayer({
+                textContent: textContent,
+                container: textLayer,
+                pageIndex : pageNum,
+                viewport: viewerViewport,
+                textDivs: []
+              });
+            });
           }
-        });
+
+        } else{
+
+          var renderTask = page.render({
+            canvasContext: self.ctx,
+            viewport: viewerViewport
+          });
+
+          renderTask.promise.then(function () {
+            self.pageRendering = false;
+            self.spinner.active = false;
+            if (self.pageNumPending !== null) {
+              // New page rendering is pending
+              self.renderPDF(self.pageNumPending);
+              self.pageNumPending = null;
+            }
+          });
+        }
 
         if (self.enableTextSelection){
           self.textLayerDiv.innerHTML="";
@@ -181,13 +251,22 @@
 
   Reader.prototype.changePDFSource = function(newSrc) {
     this.setSrc(newSrc);
+    this.setSize();
     this.loadPDF();
+  };
+
+  Reader.prototype.zoomInOut = function(step) {
+    // var step = 0.1;
+    this.currentZoomVal = Math.round((Math.round(this.currentZoomVal * 10) / 10 + step) * 10) / 10;
+    this.queueRenderPage(this.currentPage);
+    // this.renderPages();
   };
 
   Reader.prototype.zoomIn = function() {
     var step = 0.1;
     this.currentZoomVal = Math.round((Math.round(this.currentZoomVal * 10) / 10 + step) * 10) / 10;
     this.queueRenderPage(this.currentPage);
+    // this.renderPages();
   };
 
   Reader.prototype.zoomOut = function() {

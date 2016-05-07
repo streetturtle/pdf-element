@@ -1,6 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
 
-<link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../paper-card/paper-card.html">
 <link rel="import" href="../paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../paper-input/paper-input.html">
@@ -47,6 +46,12 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
 
   <template>
     <style>
+      :host {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
       paper-toolbar.pdf-toolbar {
         --paper-toolbar-background: #323639;
       }
@@ -59,6 +64,8 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
       .pdf-viewport-out {
         overflow: auto;
         background-color: #525659;
+        width: 100%;
+        height: 100%;
       }
 
       .pdf-viewport {
@@ -66,6 +73,8 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
         position: relative;
         border: 1px solid #eeeeee;
         transition: all 200ms ease-in-out;
+        width: 100%;
+        height: 100%;
       }
 
       paper-input-container.pageselector {
@@ -108,6 +117,10 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
       .textLayer {
         transition: all 200ms ease-in-out;
       }
+
+      .positionRelative {
+        position: relative;
+      }
     </style>
 
     <paper-material elevation="{{elevation}}">
@@ -127,14 +140,14 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
               <span class="pageRendering"></span>
               <paper-icon-button icon="zoom-in" on-click="zoomIn"></paper-icon-button>
               <paper-icon-button icon="zoom-out" on-click="zoomOut"></paper-icon-button>
-              <paper-icon-button id="zoomIcon" icon="fullscreen" on-click="zoom"></paper-icon-button>
+              <paper-icon-button id="zoomIcon" icon="fullscreen" on-click="zoomFit"></paper-icon-button>
               <paper-icon-button icon="file-download" hidden$="{{!downloadable}}" on-click="download"></paper-icon-button>
             </paper-toolbar>
             <div class="pdf-viewport-out" style="position: relative;">
               <canvas class="pdf-viewport"></canvas>
               <div id="text-layer" class="textLayer" hidden$="{{!enableTextSelection}}"></div>
-              <paper-spinner class="spinner" hidden$="{{!showSpinner}}"></paper-spinner>
             </div>
+            <paper-spinner class="spinner" hidden$="{{!showSpinner}}"></paper-spinner>
           </div>
         </paper-card>
       </div>
@@ -151,8 +164,7 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
          */
         src: {
           type: String,
-          notify: true,
-          observer: '_srcChanged'
+          notify: true
         },
         /**
          * The z-depth of this element, from 0-5. Setting to 0 will remove the shadow, and each increasing number greater than 0 will be "deeper" than the last.
@@ -191,40 +203,43 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
           value: false
         }
       },
-      ready() {
-        if (this.src && this.src != '') {
-          this._initializeReader();
-        }
+
+      attached: function() {
+        this.src = this.getAttribute("src");
+        this._initializeReader();
+        if (this.src) this.instance.loadPDF();
       },
-      _initializeReader: function() {
-        this.instance = new Polymer.Reader(this);
-        this.fileName = this.src.split('/').pop();
-        this.currentPage = 1;
-      },
-      _srcChanged: function(newVal) {
+
+      attributeChanged: function(name, type) {
         if (typeof this.instance == 'undefined') this._initializeReader();
         else {
-          this.instance.changePDFSource(newVal);
+          this.instance.changePDFSource(this.getAttribute(name));
           this.currentPage = 1;
           this.totalPages = this.instance.totalPages;
           this.fileName = this.src.split('/').pop();
         }
       },
-      zoomIn: function() {
+      _initializeReader: function() {
+        this.instance = new Polymer.Reader(this);
+        if (this.src != null) this.fileName = this.src.split('/').pop();
+        this.currentPage = 1;
+      },
+      zoomInOut: function(step) {
         if (this.instance.currentZoomVal >= 2) {
           this.instance.currentZoomVal = 2;
-        } else {
-          this.instance.zoomIn();
-        }
-      },
-      zoomOut: function() {
-        if (this.instance.currentZoomVal <= 0.1) {
+        } else if (this.instance.currentZoomVal <= 0.1) {
           this.instance.currentZoomVal = 0.1;
         } else {
-          this.instance.zoomOut();
+          this.instance.zoomInOut(step);
         }
       },
-      zoom: function() {
+      zoomIn: function() {
+        this.zoomInOut(0.1);
+      },
+      zoomOut: function() {
+        this.instance.zoomInOut(-0.1);
+      },
+      zoomFit: function() {
         if (this.instance.currentZoomVal == this.instance.widthZoomVal) {
           this.instance.zoomPageFit();
           this.$.zoomIcon.icon = 'fullscreen';
@@ -236,7 +251,7 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
       pageNoCommitted: function() {
         var page = parseInt(this.$.input.value);
 
-        if ((1 < page) && (page < this.instance.totalPagesNum)) {
+        if ((1 <= page) && (page <= this.instance.totalPagesNum)) {
           this.instance.currentPage = page;
           this.instance.queueRenderPage(this.instance.currentPage);
           this.currentPage = page;
