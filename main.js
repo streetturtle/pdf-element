@@ -252,7 +252,6 @@
 
   Reader.prototype.changePDFSource = function(newSrc) {
     this.setSrc(newSrc);
-    this.setSize();
     this.loadPDF();
   };
 
