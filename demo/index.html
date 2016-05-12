@@ -25,7 +25,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <link rel="import" href="../pdf-element.html">
 
-  <style is="custom-style" include="demo-pages-shared-styles">
+  <style is="custom-style" >
     .vertical-section-container {
       max-width: 900px;
     }
@@ -37,13 +37,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 </head>
 
 <body unresolved>
+
   <div class="vertical-section-container centered">
     <h3>PDF-element</h3>
     <demo-snippet class="centered-demo">
       <template>
-          <pdf-element src="./example.pdf"
+        <pdf-element src="./example.pdf"
                      elevation="5"
                      downloadable
+                     height="900"
                      show-file-name
                      enable-text-selection></pdf-element>
       </template>

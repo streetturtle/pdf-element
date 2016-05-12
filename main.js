@@ -11,7 +11,7 @@
     this.toolbarHeight = 0;
     this.title = this.toolbar.querySelector('.title');
     this.enableTextSelection = el.enableTextSelection;
-
+    this.HEIGHT = el.getAttribute('height');
 
     this.viewport = this.reader.querySelector('.pdf-viewport');
 
@@ -39,7 +39,8 @@
   Reader.prototype.setSize = function(attrName, newVal) {
 
     this.WIDTH = this.viewportOut.offsetWidth;
-    this.HEIGHT = this.viewportOut.offsetHeight;
+    if (!this.HEIGHT)
+      this.HEIGHT = this.viewportOut.offsetHeight;
 
     var width = this.WIDTH,
       height = this.HEIGHT;
