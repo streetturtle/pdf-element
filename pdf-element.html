@@ -6,6 +6,7 @@
 <link rel="import" href="../iron-input/iron-input.html">
 <link rel="import" href="../paper-spinner/paper-spinner.html">
 
+<script src="../pdfjs-dist/web/compatibility.js"></script>
 <script src="../pdfjs-dist/build/pdf.js"></script>
 <script src="../pdfjs-dist/build/pdf.worker.js"></script>
 <link rel="stylesheet" href="../pdfjs-dist/web/pdf_viewer.css">
@@ -112,6 +113,7 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
 
       paper-spinner {
         position: absolute;
+        left: 50%;
       }
 
       .textLayer {
