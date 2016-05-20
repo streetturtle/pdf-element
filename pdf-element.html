@@ -213,14 +213,18 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
       },
 
       attributeChanged: function(name, type) {
-        if (typeof this.instance == 'undefined') this._initializeReader();
-        else {
-          this.instance.changePDFSource(this.getAttribute(name));
-          this.currentPage = 1;
-          this.totalPages = this.instance.totalPages;
-          this.fileName = this.src.split('/').pop();
+        if (name === 'src') {
+          if (typeof this.instance == 'undefined') this._initializeReader();
+          else {
+            if (!this.getAttribute(name)) return;
+            this.instance.changePDFSource(this.getAttribute(name));
+            this.currentPage = 1;
+            this.totalPages = this.instance.totalPages;
+            this.fileName = this.src.split('/').pop();
+          }
         }
       },
+
       _initializeReader: function() {
         this.instance = new Polymer.Reader(this);
         if (this.src != null) this.fileName = this.src.split('/').pop();
