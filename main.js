@@ -231,22 +231,24 @@
   };
 
   Reader.prototype.setViewportPos = function() {
-    this.viewportStyle.left = (this.WIDTH - this.pageW) / 2 + 'px';
-
-    if (this.enableTextSelection)
-      this.textLayerDivStyle.left = (this.WIDTH - this.pageW) / 2 + 'px';
+    if (this.pageW < this.WIDTH)
+      this.viewportStyle.left = (this.WIDTH - this.pageW) / 2 + 'px';
+    else
+      this.viewportStyle.left = 0;
 
     if (this.pageH < this.HEIGHT) {
       this.viewportStyle.top = (this.HEIGHT - this.pageH - this.toolbarHeight) / 2 + 'px';
       this.viewportStyle.topNum = Math.floor((this.HEIGHT - this.pageH - this.toolbarHeight) / 2) + this.toolbarHeight;
       if (this.enableTextSelection){
-        this.textLayerDivStyle.top = (this.HEIGHT - this.pageH - this.toolbarHeight) / 2 + 'px';
         this.textLayerDivStyle.topNum = Math.floor((this.HEIGHT - this.pageH - this.toolbarHeight) / 2) + this.toolbarHeight;
       }
     } else {
       this.viewportStyle.top = 0;
-      if (this.enableTextSelection)
-        this.textLayerDivStyle.top = 0;
+    }
+
+    if (this.enableTextSelection) {
+      this.textLayerDivStyle.left = this.viewportStyle.left;
+      this.textLayerDivStyle.top = this.viewportStyle.top;
     }
   };
 
