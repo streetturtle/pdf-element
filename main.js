@@ -115,10 +115,11 @@
     self.pageRendering = true;
     self.spinner.active = true;
     this.PDF.getPage(pageNum).then(function(page) {
-      var scaleW, scaleH, viewerViewport, scale;
+      var scaleW, scaleH, viewerViewport, scale, radians;
+      radians = page.pageInfo.rotate * Math.PI / 180;
 
-      self.pageW = page.view[2];
-      self.pageH = page.view[3];
+      self.pageW = Math.abs((page.view[2]*Math.cos(radians)) + (page.view[3]*Math.sin(radians)));
+      self.pageH = Math.abs((page.view[3]*Math.cos(radians)) + (page.view[2]*Math.sin(radians)));
 
       if (self.currentZoomVal === 0 || !!resize) {
         scaleW = Math.round((self.WIDTH / self.pageW) * 100) / 100,
