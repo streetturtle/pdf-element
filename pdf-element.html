@@ -212,16 +212,19 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
         if (this.src) this.instance.loadPDF();
       },
 
+      loadPDF: function() {
+        if (!this.getAttribute("src")) return;
+        this.instance.changePDFSource(this.getAttribute("src"));
+        this.currentPage = 1;
+        this.totalPages = this.instance.totalPages;
+        this.fileName = this.src.split('/').pop();
+        this.$.zoomIcon.icon = 'fullscreen';
+      },
+
       attributeChanged: function(name, type) {
         if (name === 'src') {
           if (typeof this.instance == 'undefined') this._initializeReader();
-          else {
-            if (!this.getAttribute(name)) return;
-            this.instance.changePDFSource(this.getAttribute(name));
-            this.currentPage = 1;
-            this.totalPages = this.instance.totalPages;
-            this.fileName = this.src.split('/').pop();
-          }
+          else this.loadPDF();
         }
       },
 
@@ -236,6 +239,7 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
         } else if (this.instance.currentZoomVal <= 0.1) {
           this.instance.currentZoomVal = 0.1;
         } else {
+          this.$.zoomIcon.icon = 'fullscreen';
           this.instance.zoomInOut(step);
         }
       },

@@ -115,10 +115,11 @@
     self.pageRendering = true;
     self.spinner.active = true;
     this.PDF.getPage(pageNum).then(function(page) {
-      var scaleW, scaleH, viewerViewport, scale;
+      var scaleW, scaleH, viewerViewport, scale, radians;
+      radians = page.pageInfo.rotate * Math.PI / 180;
 
-      self.pageW = page.view[2];
-      self.pageH = page.view[3];
+      self.pageW = Math.abs((page.view[2]*Math.cos(radians)) + (page.view[3]*Math.sin(radians)));
+      self.pageH = Math.abs((page.view[3]*Math.cos(radians)) + (page.view[2]*Math.sin(radians)));
 
       if (self.currentZoomVal === 0 || !!resize) {
         scaleW = Math.round((self.WIDTH / self.pageW) * 100) / 100,
@@ -231,22 +232,24 @@
   };
 
   Reader.prototype.setViewportPos = function() {
-    this.viewportStyle.left = (this.WIDTH - this.pageW) / 2 + 'px';
-
-    if (this.enableTextSelection)
-      this.textLayerDivStyle.left = (this.WIDTH - this.pageW) / 2 + 'px';
+    if (this.pageW < this.WIDTH)
+      this.viewportStyle.left = (this.WIDTH - this.pageW) / 2 + 'px';
+    else
+      this.viewportStyle.left = 0;
 
     if (this.pageH < this.HEIGHT) {
       this.viewportStyle.top = (this.HEIGHT - this.pageH - this.toolbarHeight) / 2 + 'px';
       this.viewportStyle.topNum = Math.floor((this.HEIGHT - this.pageH - this.toolbarHeight) / 2) + this.toolbarHeight;
       if (this.enableTextSelection){
-        this.textLayerDivStyle.top = (this.HEIGHT - this.pageH - this.toolbarHeight) / 2 + 'px';
         this.textLayerDivStyle.topNum = Math.floor((this.HEIGHT - this.pageH - this.toolbarHeight) / 2) + this.toolbarHeight;
       }
     } else {
       this.viewportStyle.top = 0;
-      if (this.enableTextSelection)
-        this.textLayerDivStyle.top = 0;
+    }
+
+    if (this.enableTextSelection) {
+      this.textLayerDivStyle.left = this.viewportStyle.left;
+      this.textLayerDivStyle.top = this.viewportStyle.top;
     }
   };
 
