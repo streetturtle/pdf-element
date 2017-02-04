@@ -204,6 +204,13 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
         enableTextSelection: {
           type: Boolean,
           value: false
+        },
+        /*
+         * If provided then the document will be zoomed to maximum width initially.
+         */
+        fitWidth: {
+            type: Boolean,
+            value: false
         }
       },
 
@@ -211,6 +218,7 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
         this.src = this.getAttribute("src");
         this._initializeReader();
         if (this.src) this.instance.loadPDF();
+        this._setFitWidth();
       },
 
       loadPDF: function() {
@@ -219,6 +227,7 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
         this.currentPage = 1;
         this.totalPages = this.instance.totalPages;
         this.fileName = this.src.split('/').pop();
+        this._setFitWidth();
         this.$.zoomIcon.icon = 'fullscreen';
       },
 
@@ -226,6 +235,8 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
         if (name === 'src') {
           if (typeof this.instance == 'undefined') this._initializeReader();
           else this.loadPDF();
+        } else if (name === 'fitWidth') {
+            this._setFitWidth();
         }
       },
 
@@ -233,6 +244,9 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
         this.instance = new Polymer.Reader(this);
         if (this.src != null) this.fileName = this.src.split('/').pop();
         this.currentPage = 1;
+      },
+      _setFitWidth: function() {
+          this.instance.setFitWidth(this.fitWidth);
       },
       zoomInOut: function(step) {
         if (this.instance.currentZoomVal >= 2) {
