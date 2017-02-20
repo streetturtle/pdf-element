@@ -1,5 +1,7 @@
 # pdf-element
 
+[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/owner/my-element)
+
 Web component built with Polymer which allows to view PDF files.
 
 Demo: http://pavelmakhov.com/pdf-element/
