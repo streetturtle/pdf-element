@@ -1,6 +1,6 @@
 # pdf-element
 
-[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/owner/my-element)
+[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/streetturtle/pdf-element)
 
 Web component built with Polymer which allows to view PDF files.
 
