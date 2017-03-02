@@ -310,7 +310,7 @@
     a.target = '_parent';
 
     if ('download' in a) {
-      a.download = filename[filename.length - 1];
+      a.download = decodeURIComponent(filename[filename.length - 1]);
     }
 
     this.reader.appendChild(a);
