@@ -21,23 +21,28 @@ Demo: http://pavelmakhov.com/pdf-element/
 
 ## Installation
 
-```
-git clone https://github.com/streetturtle/pdf-element.git
-cd ./pdf-element
-npm install
-bower install
-gulp serve
-```
-
-or with bower:
+With Bower:
 
 ```
 bower install -S pdf-element
 ```
 
+Or just clone this repo and use `pdf-element.html` in your project 
+
 ## Contributing
 
-I would really appreciate any help. PR/issues are welcome =)
+I would really appreciate any help. PR/issues and starts are welcome =)
+
+To run it locally make sure you have [Polymer CLI](https://www.npmjs.com/package/polymer-cli) installed and do the following:
+
+```
+git clone https://github.com/streetturtle/pdf-element.git
+cd pdf-element
+bower install
+polymer serve
+```
+
+And go to [http://localhost:8080/components/pdf-element/](http://localhost:8080/components/pdf-element/)
 
 ## Licence
 

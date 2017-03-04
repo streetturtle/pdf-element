@@ -11,7 +11,6 @@
     "polymer",
     "pdf"
   ],
-  "private": true,
   "dependencies": {
     "polymer": "Polymer/polymer#^1.4.0",
     "iron-image": "PolymerElements/iron-image#^1.2.3",
@@ -24,6 +23,7 @@
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.1.5",
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.2.3",
-    "web-component-tester": "^4.0.0"
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
   }
 }
