@@ -17,7 +17,7 @@ Demo: http://pavelmakhov.com/pdf-element/
 - Text selection (optional)
 - Works in IE (in progress)
 
-![pdf-element](http://pavelmakhov.com/pdf-element/pdf-element.png)
+![pdf-element](./screenshot.png)
 
 ## Installation
 
