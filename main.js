@@ -11,6 +11,7 @@
     this.toolbarHeight = 0;
     this.title = this.toolbar.querySelector('.title');
     this.enableTextSelection = el.enableTextSelection;
+    this.fitWidth = el.fitWidth;
     this.HEIGHT = el.getAttribute('height');
 
     this.viewport = this.reader.querySelector('.pdf-viewport');
@@ -65,6 +66,10 @@
 
   Reader.prototype.setSrc = function(src) {
     this.SRC = src;
+  };
+
+  Reader.prototype.setFitWidth = function(fitWidth) {
+    this.fitWidth = fitWidth;
   };
 
   Reader.prototype.queueRenderPage = function(num) {
@@ -125,8 +130,9 @@
         scaleW = Math.round((self.WIDTH / self.pageW) * 100) / 100,
           scaleH = Math.round(((self.HEIGHT - self.toolbarHeight) / self.pageH) * 100) / 100,
           scale = Math.min(scaleH, scaleW);
-        self.currentZoomVal = self.fitZoomVal = scale;
+        self.fitZoomVal = scale;
         self.widthZoomVal = self.WIDTH / self.pageW;
+        self.currentZoomVal = self.fitWidth ? self.widthZoomVal : self.fitZoomVal;
       }
       if (!!resize) {
         self.zoomPage({
