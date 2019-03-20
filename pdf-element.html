@@ -4,17 +4,16 @@
 <link rel="import" href="../paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../iron-input/iron-input.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../paper-spinner/paper-spinner.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../paper-input/paper-input.html">
 
 <script src="../pdfjs-dist/web/compatibility.js"></script>
 <script src="../pdfjs-dist/build/pdf.js"></script>
 <script src="../pdfjs-dist/build/pdf.worker.js"></script>
-<link rel="stylesheet" href="../pdfjs-dist/web/pdf_viewer.css">
 <script src="main.js"></script>
 
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="../pdfjs-dist/web/pdf_viewer.css">
 
 <!--
 Polymer element which renders PDF documents. It uses [PDF.js](https://mozilla.github.io/pdf.js/) library behind.
@@ -45,8 +44,12 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
 @hero hero.svg
 -->
 <dom-module id="pdf-element">
-
+  
+  <link rel="import" href="../pdfjs-dist/web/pdf_viewer.css" type="css">
+  <link rel="import" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" type="css">
+  
   <template>
+    
     <style>
       :host {
         display: block;
@@ -79,14 +82,23 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
         height: 100%;
       }
 
-      paper-input-container.pageselector {
+      paper-input.pageselector {
         --paper-input-container-underline: {
           visibility: hidden;
           width: 3ch;
         }
         ;
-        --paper-input-container-underline-focus: {
+        --paper-input-underline-focus: {
           visibility: hidden;
+        }
+        ;
+        --paper-input-container-input: {
+
+          color: #fff;
+        }
+        ;
+        --paper-input-container-underline-focus: {
+            display: none;
         }
         ;
         display: inline-block;
@@ -96,7 +108,6 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
 
       #input {
         -webkit-margin-start: -3px;
-        color: #fff;
         line-height: 18px;
         padding: 3px;
         text-align: end;
@@ -132,19 +143,18 @@ Another awesome feature is dynamically load PDF file. So you can change the `src
 
           <div class="pdf-viewer">
             <paper-toolbar class="pdf-toolbar">
-              <paper-icon-button icon="arrow-back" on-click="showPrev"></paper-icon-button>
-              <paper-input-container class="pageselector" no-label-float>
-                <input id="input" is="iron-input" value={{currentPage}} prevent-invalid-input allowed-pattern="\d" on-change="pageNoCommitted">
-              </paper-input-container>
-              <span id="slash">/</span><span id="totalPages"></span>
-              <paper-icon-button icon="arrow-forward" on-click="showNext"></paper-icon-button>
-              <span class="title" hidden$="{{!showFileName}}">{{fileName}}</span>
-              <span class="title" hidden$="{{showFileName}}"></span>
+              <paper-icon-button icon="arrow-back" on-click="showPrev" slot="top"></paper-icon-button>
+              <paper-input value={{currentPage}} id="input" class="pageselector" prevent-invalid-input no-label-float allowed-pattern="\d" slot="top" on-change="pageNoCommitted">
+              </paper-input>
+              <span id="slash" slot="top">/</span><span id="totalPages" slot="top"></span>
+              <paper-icon-button icon="arrow-forward" on-click="showNext" slot="top"></paper-icon-button>
+              <span class="title" slot="top" hidden$="{{!showFileName}}">{{fileName}}</span>
+              <span class="title" slot="top" hidden$="{{showFileName}}"></span>
               <span class="pageRendering"></span>
-              <paper-icon-button icon="zoom-in" on-click="zoomIn"></paper-icon-button>
-              <paper-icon-button icon="zoom-out" on-click="zoomOut"></paper-icon-button>
-              <paper-icon-button id="zoomIcon" icon="fullscreen" on-click="zoomFit"></paper-icon-button>
-              <paper-icon-button icon="file-download" hidden$="{{!downloadable}}" on-click="download"></paper-icon-button>
+              <paper-icon-button icon="zoom-in" on-click="zoomIn" slot="top"></paper-icon-button>
+              <paper-icon-button icon="zoom-out" on-click="zoomOut" slot="top"></paper-icon-button>
+              <paper-icon-button id="zoomIcon" icon="fullscreen" on-click="zoomFit" slot="top"></paper-icon-button>
+              <paper-icon-button icon="file-download" hidden$="{{!downloadable}}" on-click="download"slot="top"></paper-icon-button>
             </paper-toolbar>
             <div class="pdf-viewport-out" style="position: relative;">
               <canvas class="pdf-viewport"></canvas>

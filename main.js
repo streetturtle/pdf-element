@@ -6,23 +6,24 @@
   var Reader = function(el) {
     this.element = el;
     this.reader = Polymer.dom(el.root).querySelector('.pdf-viewer');
-    this.viewportOut = this.reader.querySelector('.pdf-viewport-out');
-    this.toolbar = this.reader.querySelector('.pdf-toolbar');
+    this.viewportOut = Polymer.dom(el.root).querySelector('.pdf-viewport-out');
+    this.toolbar = Polymer.dom(el.root).querySelector('.pdf-toolbar');
     this.toolbarHeight = 0;
-    this.title = this.toolbar.querySelector('.title');
+    this.title = Polymer.dom(el.root).querySelector('.title');
     this.enableTextSelection = el.enableTextSelection;
     this.fitWidth = el.fitWidth;
     this.HEIGHT = el.getAttribute('height');
 
-    this.viewport = this.reader.querySelector('.pdf-viewport');
+    this.viewport = Polymer.dom(el.root).querySelector('.pdf-viewport');
 
     if (this.enableTextSelection){
-      this.textLayerDiv = this.reader.querySelector(".textLayer");
+      this.textLayerDiv = Polymer.dom(el.root).querySelector(".textLayer");
       this.textLayerDivStyle = this.textLayerDiv.style;
     }
 
-    this.spinner = this.reader.querySelector(".spinner");
-    this.totalPages = this.reader.querySelector('#totalPages');
+    this.spinner = Polymer.dom(el.root).querySelector(".spinner");
+    this.totalPages = Polymer.dom(el.root).querySelector('#totalPages');
+    
     this.viewportStyle = this.viewport.style;
     this.viewportOutStyle = this.viewportOut.style;
 
