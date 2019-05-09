@@ -3,7 +3,7 @@
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/streetturtle/pdf-element)
 
 Web component built with Polymer which allows to view PDF documents.  
-Note that this element doesn't use browser's built-in PDF rendered, but rednders PDF using Mozilla's [pdf.js](https://mozilla.github.io/pdf.js/) library, which let's you have more control on how the document is displayed and which actions are available to user. 
+Note that this element doesn't use browser's built-in PDF rendered, but renders PDF using Mozilla's [pdf.js](https://mozilla.github.io/pdf.js/) library, which let's you have more control on how the document is displayed and which actions are available to user. 
 
 Demo: http://pavelmakhov.com/pdf-element/
 
